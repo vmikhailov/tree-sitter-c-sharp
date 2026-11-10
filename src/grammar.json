@@ -10294,6 +10294,15 @@
               "name": "character_literal_content"
             },
             {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_nul_character_literal_content"
+              },
+              "named": true,
+              "value": "character_literal_content"
+            },
+            {
               "type": "SYMBOL",
               "name": "escape_sequence"
             }
@@ -10308,17 +10317,8 @@
     "character_literal_content": {
       "type": "IMMEDIATE_TOKEN",
       "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "PATTERN",
-            "value": "[^'\\\\]"
-          },
-          {
-            "type": "STRING",
-            "value": "\u0000"
-          }
-        ]
+        "type": "PATTERN",
+        "value": "[^'\\\\]"
       }
     },
     "integer_literal": {
@@ -13049,6 +13049,10 @@
     {
       "type": "SYMBOL",
       "name": "_lambda_paren_open"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_nul_character_literal_content"
     }
   ],
   "inline": [

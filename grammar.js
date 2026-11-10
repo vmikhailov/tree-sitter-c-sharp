@@ -134,6 +134,7 @@ export default grammar({
     // simple-lambda parameter list (at least one element has a parameter
     // modifier) closed by ')=>'.
     $._lambda_paren_open,
+    $._nul_character_literal_content,
   ],
 
   extras: $ => [
@@ -2035,11 +2036,11 @@ export default grammar({
 
     character_literal: $ => seq(
       '\'',
-      choice($.character_literal_content, $.escape_sequence),
+      choice($.character_literal_content, alias($._nul_character_literal_content, $.character_literal_content), $.escape_sequence),
       '\'',
     ),
 
-    character_literal_content: $ => token.immediate(choice(/[^'\\]/, '\0')),
+    character_literal_content: _ => token.immediate(/[^'\\]/),
 
     integer_literal: _ => token(seq(
       choice(
