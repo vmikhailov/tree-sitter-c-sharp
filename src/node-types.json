@@ -1157,6 +1157,10 @@
         {
           "type": "attribute_argument",
           "named": true
+        },
+        {
+          "type": "preproc_if",
+          "named": true
         }
       ]
     }
@@ -4698,7 +4702,6 @@
   {
     "type": "preproc_define",
     "named": true,
-    "extra": true,
     "fields": {},
     "children": {
       "multiple": false,
@@ -4769,6 +4772,10 @@
       "required": false,
       "types": [
         {
+          "type": "attribute_argument",
+          "named": true
+        },
+        {
           "type": "attribute_list",
           "named": true
         },
@@ -4816,6 +4823,10 @@
       "required": false,
       "types": [
         {
+          "type": "attribute_argument",
+          "named": true
+        },
+        {
           "type": "attribute_list",
           "named": true
         },
@@ -4857,7 +4868,6 @@
   {
     "type": "preproc_endregion",
     "named": true,
-    "extra": true,
     "fields": {
       "content": {
         "multiple": false,
@@ -4874,7 +4884,6 @@
   {
     "type": "preproc_error",
     "named": true,
-    "extra": true,
     "fields": {},
     "children": {
       "multiple": false,
@@ -4944,6 +4953,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "attribute_argument",
+          "named": true
+        },
         {
           "type": "declaration",
           "named": true
@@ -5046,7 +5059,6 @@
   {
     "type": "preproc_line",
     "named": true,
-    "extra": true,
     "fields": {},
     "children": {
       "multiple": true,
@@ -5066,13 +5078,11 @@
   {
     "type": "preproc_nullable",
     "named": true,
-    "extra": true,
     "fields": {}
   },
   {
     "type": "preproc_pragma",
     "named": true,
-    "extra": true,
     "fields": {},
     "children": {
       "multiple": true,
@@ -5096,7 +5106,6 @@
   {
     "type": "preproc_region",
     "named": true,
-    "extra": true,
     "fields": {
       "content": {
         "multiple": false,
@@ -5113,7 +5122,6 @@
   {
     "type": "preproc_undef",
     "named": true,
-    "extra": true,
     "fields": {},
     "children": {
       "multiple": false,
@@ -5129,7 +5137,6 @@
   {
     "type": "preproc_warning",
     "named": true,
-    "extra": true,
     "fields": {},
     "children": {
       "multiple": false,
@@ -6936,8 +6943,7 @@
   },
   {
     "type": "comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "const",

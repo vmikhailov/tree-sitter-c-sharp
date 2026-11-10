@@ -235,7 +235,10 @@ export default grammar({
 
     attribute_argument_list: $ => prec(-1, seq(
       '(',
-      commaSep($.attribute_argument),
+      repeat(choice(
+        seq($.attribute_argument, optional(',')),
+        seq(alias($.preproc_if_in_attribute_argument_list, $.preproc_if), optional(',')),
+      )),
       ')',
     )),
 
@@ -2036,7 +2039,7 @@ export default grammar({
       '\'',
     ),
 
-    character_literal_content: $ => token.immediate(/[^'\\]/),
+    character_literal_content: $ => token.immediate(choice(/[^'\\]/, '\0')),
 
     integer_literal: _ => token(seq(
       choice(
@@ -2168,6 +2171,7 @@ export default grammar({
     ...preprocIf('_in_expression', $ => $.expression, -2, false),
     ...preprocIf('_in_enum_member_declaration', $ => $.enum_member_declaration, 0, false),
     ...preprocIf('_in_attribute_list', $ => $.attribute_list, -1, false),
+    ...preprocIf('_in_attribute_argument_list', $ => seq($.attribute_argument, optional(',')), -3, true),
 
     preproc_arg: _ => token(prec(-1, /\S([^/\n]|\/[^*]|\\\r?\n)*/)),
     preproc_directive: _ => /#[ \t]*[a-zA-Z0-9]\w*/,
