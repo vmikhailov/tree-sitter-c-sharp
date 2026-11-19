@@ -134,6 +134,7 @@ export default grammar({
     // simple-lambda parameter list (at least one element has a parameter
     // modifier) closed by ')=>'.
     $._lambda_paren_open,
+    $._nul_character_literal_content,
   ],
 
   extras: $ => [
@@ -235,7 +236,10 @@ export default grammar({
 
     attribute_argument_list: $ => prec(-1, seq(
       '(',
-      commaSep($.attribute_argument),
+      repeat(choice(
+        seq($.attribute_argument, optional(',')),
+        seq(alias($.preproc_if_in_attribute_argument_list, $.preproc_if), optional(',')),
+      )),
       ')',
     )),
 
@@ -718,10 +722,12 @@ export default grammar({
     ),
 
     _parameter_type_with_modifiers: $ => seq(
-      repeat(prec.left(alias(
-        choice('this', 'scoped', 'ref', 'out', 'in', 'readonly'),
-        $.modifier,
-      ))),
+      repeat(choice(
+        prec.left(alias(choice('this', 'scoped', 'ref', 'readonly'), $.modifier)),
+        // `in`/`out` also start an `argument` (prec 1), which won the shift/reduce
+        // against this reduction and sent `(in T x) => ...` to ERROR.
+        prec.left(1, alias(choice('out', 'in'), $.modifier)),
+      )),
       field('type', $.type),
     ),
 
@@ -1561,7 +1567,28 @@ export default grammar({
 
     _pointer_indirection_expression: $ => prec.right(PREC.UNARY, seq(
       '*',
-      $.lvalue_expression,
+      choice(
+        $.lvalue_expression,
+        // `*(p + 1)` and `*(T*)p`. The operand is not an lvalue, so the #413
+        // restriction above shut them out. They stay legal here, but with a
+        // negative dynamic precedence so `(a) * (b + c)` still reads as a
+        // multiplication rather than a cast of a dereference.
+        prec.dynamic(-2, $.parenthesized_expression),
+        prec.dynamic(-2, alias($._pointer_cast_expression, $.cast_expression)),
+      ),
+    )),
+
+    _pointer_cast_expression: $ => prec(PREC.CAST, seq(
+      '(',
+      field('type', $.pointer_type),
+      ')',
+      // Not a full `expression`: `*(T*)p = 1` must stay an assignment to the
+      // dereference, not a cast of `p = 1`.
+      field('value', choice(
+        $.lvalue_expression,
+        $.parenthesized_expression,
+        alias($._address_of_expression, $.prefix_unary_expression),
+      )),
     )),
 
     // Address-of is split out from `prefix_unary_expression` so that
@@ -2032,11 +2059,11 @@ export default grammar({
 
     character_literal: $ => seq(
       '\'',
-      choice($.character_literal_content, $.escape_sequence),
+      choice($.character_literal_content, alias($._nul_character_literal_content, $.character_literal_content), $.escape_sequence),
       '\'',
     ),
 
-    character_literal_content: $ => token.immediate(/[^'\\]/),
+    character_literal_content: _ => token.immediate(/[^'\\]/),
 
     integer_literal: _ => token(seq(
       choice(
@@ -2168,6 +2195,7 @@ export default grammar({
     ...preprocIf('_in_expression', $ => $.expression, -2, false),
     ...preprocIf('_in_enum_member_declaration', $ => $.enum_member_declaration, 0, false),
     ...preprocIf('_in_attribute_list', $ => $.attribute_list, -1, false),
+    ...preprocIf('_in_attribute_argument_list', $ => seq($.attribute_argument, optional(',')), -3, true),
 
     preproc_arg: _ => token(prec(-1, /\S([^/\n]|\/[^*]|\\\r?\n)*/)),
     preproc_directive: _ => /#[ \t]*[a-zA-Z0-9]\w*/,

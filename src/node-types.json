@@ -1157,6 +1157,10 @@
         {
           "type": "attribute_argument",
           "named": true
+        },
+        {
+          "type": "preproc_if",
+          "named": true
         }
       ]
     }
@@ -4689,6 +4693,10 @@
       "required": true,
       "types": [
         {
+          "type": "cast_expression",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         }
@@ -4769,6 +4777,10 @@
       "required": false,
       "types": [
         {
+          "type": "attribute_argument",
+          "named": true
+        },
+        {
           "type": "attribute_list",
           "named": true
         },
@@ -4815,6 +4827,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "attribute_argument",
+          "named": true
+        },
         {
           "type": "attribute_list",
           "named": true
@@ -4944,6 +4960,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "attribute_argument",
+          "named": true
+        },
         {
           "type": "declaration",
           "named": true

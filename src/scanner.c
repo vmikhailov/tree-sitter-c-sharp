@@ -19,6 +19,7 @@ enum TokenType {
     RAW_STRING_END,
     RAW_STRING_CONTENT,
     LAMBDA_PAREN_OPEN,
+    NUL_CHARACTER_LITERAL_CONTENT,
 };
 
 typedef enum {
@@ -634,6 +635,13 @@ bool tree_sitter_c_sharp_external_scanner_scan(void *payload, TSLexer *lexer, co
 
         lexer->mark_end(lexer);
         return did_advance;
+    }
+
+    if (valid_symbols[NUL_CHARACTER_LITERAL_CONTENT] && lexer->lookahead == 0 && !lexer->eof(lexer)) {
+        advance(lexer);
+        lexer->mark_end(lexer);
+        lexer->result_symbol = NUL_CHARACTER_LITERAL_CONTENT;
+        return true;
     }
 
     return false;
